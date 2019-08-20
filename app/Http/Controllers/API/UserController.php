@@ -29,7 +29,7 @@ class UserController extends Controller
     {
         $this->validate($request,[
             'name' => 'required|string|min:4|max:191',
-            'email' => 'required|string|min:6|max:191|unique:users',
+            'email' => 'required|string|email|min:6|max:191|unique:users',
             'password' => 'required|string|min:6|max:191',
             'type' => 'required',
         ]);
@@ -64,7 +64,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $this->validate($request,[
+            'name' => 'required|string|min:4|max:191',
+            'email' => 'required|string|email|min:6|max:191|unique:users,email,'.$user->id,
+            'password' => 'sometime|string|min:6|max:191',
+            'type' => 'required',
+        ]);
+        $user->update($request->all());
+        return ['message', 'User has updated'];
     }
 
     /**
@@ -75,6 +83,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user -> delete();
+        return ['message', 'User has deleted'];
     }
 }

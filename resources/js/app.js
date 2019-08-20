@@ -39,7 +39,7 @@ Vue.filter('myDate',(test) => {
 // Using ProgressBar
 const progressBar_options = {
   color: '#bffaf3',
-  failedColor: '#874b4b',
+  failedColor: '#FF0000',
   thickness: '5px',
   transition: {
     speed: '0.2s',
@@ -64,6 +64,14 @@ const Toast = Swal.mixin({
   timer: 3000
 })
 window.Toast = Toast;
+
+
+
+//Using Custom Events
+window.Fire = new Vue();
+
+
+
 
 
 const app = new Vue({
