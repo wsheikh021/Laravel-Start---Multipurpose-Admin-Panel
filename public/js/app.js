@@ -2049,6 +2049,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2069,13 +2103,13 @@ __webpack_require__.r(__webpack_exports__);
     ShowNewModal: function ShowNewModal() {
       this.editMode = false;
       this.form.reset();
-      $('#exampleModal').modal('show');
+      $("#exampleModal").modal("show");
     },
     ShowEditModal: function ShowEditModal(user) {
       this.editMode = true;
       this.form.reset();
       this.form.clear();
-      $('#exampleModal').modal('show');
+      $("#exampleModal").modal("show");
       this.form.fill(user);
     },
     LoadUser: function LoadUser() {
@@ -2091,22 +2125,22 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$Progress.start();
       this.form.post("api/user").then(function () {
-        $('#exampleModal').modal('hide');
+        $("#exampleModal").modal("hide");
 
         _this2.$Progress.finish();
 
         Toast.fire({
-          type: 'success',
-          title: 'User created successfully'
+          type: "success",
+          title: "User created successfully"
         }); //using custom events
 
-        Fire.$emit('AfterCreated');
+        Fire.$emit("AfterCreated");
       })["catch"](function () {
         _this2.$Progress.fail();
 
         Toast.fire({
-          type: 'error',
-          title: 'Some error occured, please try again later!'
+          type: "error",
+          title: "Some error occured, please try again later!"
         });
       });
     },
@@ -2114,23 +2148,23 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       this.$Progress.start();
-      this.form.put('api/user/' + this.form.id).then(function () {
-        $('#exampleModal').modal('hide');
+      this.form.put("api/user/" + this.form.id).then(function () {
+        $("#exampleModal").modal("hide");
 
         _this3.$Progress.finish();
 
         Toast.fire({
-          type: 'success',
-          title: 'User updated successfully'
+          type: "success",
+          title: "User updated successfully"
         }); //using custom events
 
-        Fire.$emit('AfterCreated');
+        Fire.$emit("AfterCreated");
       })["catch"](function () {
         _this3.$Progress.fail();
 
         Toast.fire({
-          type: 'error',
-          title: 'Some error occured, please try again later!'
+          type: "error",
+          title: "Some error occured, please try again later!"
         });
       });
     },
@@ -2138,33 +2172,33 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       Swal.fire({
-        title: 'Are you sure?',
+        title: "Are you sure?",
         text: "You won't be able to revert this!",
-        type: 'warning',
+        type: "warning",
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
       }).then(function (result) {
         if (result.value) {
           _this4.$Progress.start();
 
-          _this4.form["delete"]('api/user/' + id).then(function () {
+          _this4.form["delete"]("api/user/" + id).then(function () {
             Toast.fire({
-              type: 'success',
-              title: 'User deleted successfully'
+              type: "success",
+              title: "User deleted successfully"
             });
 
             _this4.$Progress.finish(); //using custom events
 
 
-            Fire.$emit('AfterCreated');
+            Fire.$emit("AfterCreated");
           })["catch"](function () {
             _this4.$Progress.fail();
 
             Toast.fire({
-              type: 'error',
-              title: 'Some error occured, please try again later!'
+              type: "error",
+              title: "Some error occured, please try again later!"
             });
           });
         }
@@ -2176,7 +2210,7 @@ __webpack_require__.r(__webpack_exports__);
 
     this.LoadUser(); //using custom events
 
-    Fire.$on('AfterCreated', function () {
+    Fire.$on("AfterCreated", function () {
       return _this5.LoadUser();
     });
   }
