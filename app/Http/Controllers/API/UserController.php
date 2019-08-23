@@ -15,6 +15,13 @@ class UserController extends Controller
         $this->middleware('auth:api');
     }
 
+    public function profile(){
+        return auth('api')->user();
+    }
+    public function profileUpdate(){
+        $user = auth('api')->user();
+        return ['www','www'];
+    }
 
     /**
      * Display a listing of the resource.
