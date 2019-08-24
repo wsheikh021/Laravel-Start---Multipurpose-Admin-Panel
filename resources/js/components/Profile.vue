@@ -177,8 +177,8 @@
                           id="inputName"
                           :class="{ 'is-invalid': form.errors.has('name') }"
                         />
+                        <has-error :form="form" field="name"></has-error>
                       </div>
-                      <has-error :form="form" field="name"></has-error>
                     </div>
 
                     <div class="form-group">
@@ -187,15 +187,32 @@
                       <div class="col-sm-10">
                         <input
                           v-model="form.email"
-                          type="text"
+                          type="email"
                           name="email"
                           placeholder="Email"
                           class="form-control"
                           id="inputEmail"
                           :class="{ 'is-invalid': form.errors.has('email') }"
                         />
+                        <has-error :form="form" field="email"></has-error>
                       </div>
-                      <has-error :form="form" field="email"></has-error>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+
+                      <div class="col-sm-10">
+                        <input
+                          v-model="form.password"
+                          type="password"
+                          name="password"
+                          placeholder="Password"
+                          class="form-control"
+                          id="inputPassword"
+                          :class="{ 'is-invalid': form.errors.has('password') }"
+                        />
+                        <has-error :form="form" field="password"></has-error>
+                      </div>
                     </div>
 
                     <div class="form-group">
@@ -211,8 +228,8 @@
                           class="form-control"
                           :class="{ 'is-invalid': form.errors.has('bio') }"
                         ></textarea>
+                        <has-error :form="form" field="bio"></has-error>
                       </div>
-                      <has-error :form="form" field="bio"></has-error>
                     </div>
 
                     <div class="form-group">
@@ -223,18 +240,6 @@
                       </div>
                     </div>
 
-                    <div class="form-group">
-                      <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
-
-                      <div class="col-sm-10">
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="inputSkills"
-                          placeholder="Skills"
-                        />
-                      </div>
-                    </div>
                     <div class="form-group">
                       <div class="col-sm-offset-2 col-sm-10">
                         <div class="checkbox">
@@ -282,18 +287,41 @@ export default {
   methods: {
     convertImage(e) {
       let file = e.target.files[0];
-      var reader = new FileReader();
-      reader.onloadend = () => {
-        // console.log('RESULT', reader.result)
-        this.form.photo = reader.result;
-      };
-      reader.readAsDataURL(file);
+      if (file["size"] < 2097152) {
+        var reader = new FileReader();
+        reader.onloadend = () => {
+          // console.log('RESULT', reader.result)
+          this.form.photo = reader.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        Toast.fire({
+          type: "error",
+          title: "Image is too large"
+        });
+      }
     },
     updateProfile() {
-      axios
-        .put("api/profileupdate")
-        .then(() => {})
-        .catch(() => {});
+      this.$Progress.start();
+      if (this.form.password == "") {
+        this.form.password = undefined;
+      }
+      this.form
+        .put("api/profileupdate/")
+        .then(() => {
+          this.$Progress.finish();
+          Toast.fire({
+            type: "success",
+            title: "Profile updated successfully"
+          });
+        })
+        .catch(() => {
+          this.$Progress.fail();
+          Toast.fire({
+            type: "error",
+            title: "Some error occured, please try again later!"
+          });
+        });
     }
   },
   mounted() {

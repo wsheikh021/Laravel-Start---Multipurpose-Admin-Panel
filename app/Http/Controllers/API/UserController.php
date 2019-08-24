@@ -18,9 +18,30 @@ class UserController extends Controller
     public function profile(){
         return auth('api')->user();
     }
-    public function profileUpdate(){
+
+    public function profileUpdate(Request $request){
         $user = auth('api')->user();
-        return ['www','www'];
+
+        $this->validate($request,[
+            'name' => 'required|string|min:4|max:191',
+            'email' => 'required|string|email|min:6|max:191|unique:users,email,'.$user->id,
+            'password' => 'sometimes|required|min:6',
+        ]);
+
+        
+        if($request->photo != $user->photo){
+            $name = time(). '.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
+            \Image::make($request->photo)->save(public_path('img/profile/').$name);
+            $request->merge(['photo' => $name]);
+        }    
+
+        if(!empty($request->password)){
+            $request->merge(['password' => Hash::make($request['password'])]);
+        }
+
+
+        $user->update($request->all());
+        return ['message', 'User has updated'];
     }
 
     /**
@@ -82,7 +103,7 @@ class UserController extends Controller
         $this->validate($request,[
             'name' => 'required|string|min:4|max:191',
             'email' => 'required|string|email|min:6|max:191|unique:users,email,'.$user->id,
-            'password' => 'sometime|string|min:6|max:191',
+            'password' => 'sometimes|required|string|min:6|max:191',
             'type' => 'required',
         ]);
         $user->update($request->all());
