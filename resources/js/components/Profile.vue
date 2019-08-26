@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-12">
+      <div class="col-md-12 mt-3">
         <div class="card card-widget widget-user">
           <div class="widget-user-header bg-info-active">
-            <h3 class="widget-user-username">Alexander Pierce</h3>
+            <h3 class="widget-user-username">{{user['name']}}</h3>
             <h5 class="widget-user-desc">Founder &amp; CEO</h5>
           </div>
           <div class="widget-user-image">
-            <img class="img-circle elevation-2" src alt="User Avatar" />
+            <img class="img-circle elevation-2" :src="this.userProfile" alt="User Avatar" />
           </div>
           <div class="card-footer">
             <div class="row">
@@ -273,6 +273,8 @@
 export default {
   data() {
     return {
+      user: [],
+      userProfile: "",
       form: new Form({
         id: "",
         name: "",
@@ -285,6 +287,24 @@ export default {
     };
   },
   methods: {
+    getData() {
+      axios
+        .get("api/profile")
+        .then(({ data }) => {
+          this.form.fill(data);
+          this.user = data;
+          this.userProfile = "img/profile/" + data["photo"];
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    getProfile() {
+      //   let prefix = this.form.photo.match(/\//) ? "" : "/img/profile/";
+      //   return prefix + this.form.photo;
+
+      return "img/profile/" + this.form.photo;
+    },
     convertImage(e) {
       let file = e.target.files[0];
       if (file["size"] < 2097152) {
@@ -314,6 +334,9 @@ export default {
             type: "success",
             title: "Profile updated successfully"
           });
+          
+          //using custom events
+          Fire.$emit("AfterCreated");
         })
         .catch(() => {
           this.$Progress.fail();
@@ -325,15 +348,10 @@ export default {
     }
   },
   mounted() {
-    console.log("Component mounted.");
-  },
-  created() {
-    axios
-      .get("api/profile")
-      .then(({ data }) => {
-        this.form.fill(data);
-      })
-      .catch();
+    this.getData();
+
+    //using custom events
+    Fire.$on("AfterCreated", () => this.getData());
   }
 };
 </script>

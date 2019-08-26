@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-md-12 mt-5">
+      <div class="col-md-12 mt-5 mb-5" v-if="$gate.isAdminOrAuthor()">
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Users Table</h3>
@@ -49,7 +49,10 @@
           </div>
           <!-- /.card-body -->
         </div>
-        <!-- /.card -->
+      </div>
+
+      <div class="col-md-12 mt-5 mb-5" v-else>
+        <not-found></not-found>
       </div>
     </div>
 
@@ -183,7 +186,9 @@ export default {
       this.form.fill(user);
     },
     LoadUser() {
-      axios.get("api/user").then(({ data }) => (this.users = data.data));
+      if(this.$gate.isAdminOrAuthor){
+        axios.get("api/user").then(({ data }) => (this.users = data.data));
+      }
     },
     CreateUser() {
       this.$Progress.start();

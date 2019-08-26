@@ -1,11 +1,18 @@
-import Vue from 'vue'
+import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { Form, HasError, AlertError } from 'vform';
 import moment from 'moment';
-import VueProgressBar from 'vue-progressbar'
-import Swal from 'sweetalert2'
+import VueProgressBar from 'vue-progressbar';
+import Swal from 'sweetalert2';
 
 require('./bootstrap');
+
+//Custom Roles
+import Gate from './Gate';
+ Vue.prototype.$gate = new Gate(window.user);
+ //Custom Roles
+
+
 
 window.Vue = require('vue');
 window.Form = Form;
@@ -52,7 +59,7 @@ const progressBar_options = {
 }
 
 Vue.use(VueProgressBar, progressBar_options)
-
+// Using ProgressBar
 
 
 // Using SweetAlter2
@@ -64,17 +71,25 @@ const Toast = Swal.mixin({
   timer: 3000
 })
 window.Toast = Toast;
-
+// Using SweetAlter2
 
 
 //Using Custom Events
 window.Fire = new Vue();
+//Using Custom Events
 
 
-
-
+// Using NotFound - Registered it globally
+Vue.component('not-found',require('./components/NotFound.vue').default);
+// Using NotFound404
 
 const app = new Vue({
   el: '#app',
   router
 });
+
+
+
+
+
+

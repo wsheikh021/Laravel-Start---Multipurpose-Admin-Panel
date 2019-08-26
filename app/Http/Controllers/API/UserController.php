@@ -28,11 +28,16 @@ class UserController extends Controller
             'password' => 'sometimes|required|min:6',
         ]);
 
-        
-        if($request->photo != $user->photo){
+        $currentPhoto = $user->photo;
+        if($request->photo != $currentPhoto){
             $name = time(). '.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
             \Image::make($request->photo)->save(public_path('img/profile/').$name);
             $request->merge(['photo' => $name]);
+
+            $publicDir = public_path('img/profile/').$currentPhoto;
+            if(file_exists($publicDir)){
+                @unlink($publicDir);
+            }
         }    
 
         if(!empty($request->password)){
@@ -41,7 +46,7 @@ class UserController extends Controller
 
 
         $user->update($request->all());
-        return ['message', 'User has updated'];
+        return ['message', $currentPhoto];
     }
 
     /**
@@ -51,7 +56,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::latest()->paginate(10);
+        // Authrize User/Roles
+        // $this->authorize('isAdmin');
+        if (\Gate::any(['isAdmin', 'isAuthor'])) {
+            return User::latest()->paginate(10);
+        }
     }
 
     /**
