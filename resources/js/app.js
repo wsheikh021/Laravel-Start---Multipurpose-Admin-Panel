@@ -24,7 +24,8 @@ Vue.component(AlertError.name, AlertError)
 const routes = [
   { path: '/dashboard', component: require('./components/Dashboard.vue').default },
   { path: '/profile', component: require('./components/Profile.vue').default },
-  { path: '/users', component: require('./components/Users.vue').default }
+  { path: '/users', component: require('./components/Users.vue').default },
+  { path: '*', component: require('./components/NotFound.vue').default },
 ]
 
 const router = new VueRouter({
@@ -83,9 +84,23 @@ window.Fire = new Vue();
 Vue.component('not-found',require('./components/NotFound.vue').default);
 // Using NotFound404
 
+// Using PagInation
+Vue.component('pagination', require('laravel-vue-pagination'));
+// Using PagInation
+
 const app = new Vue({
   el: '#app',
-  router
+  router,
+  data:{
+    search: '',
+  },
+  methods:{
+    searchit: _.debounce(() => {
+      //using custom events
+      Fire.$emit("searching");
+    },1000),
+  }
+
 });
 
 

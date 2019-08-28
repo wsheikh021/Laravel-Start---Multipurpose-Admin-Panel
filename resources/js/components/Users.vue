@@ -28,7 +28,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="user in users" :key="user.id">
+                <tr v-for="user in users.data" :key="user.id">
                   <td>{{user.id}}</td>
                   <td>{{user.name}}</td>
                   <td>{{user.email}}</td>
@@ -46,6 +46,9 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="card-footer">
+            <pagination :data="users" @pagination-change-page="getResults"></pagination>
           </div>
           <!-- /.card-body -->
         </div>
@@ -173,6 +176,11 @@ export default {
     };
   },
   methods: {
+    getResults(page) {
+      axios.get("api/user?page=" + page).then(response => {
+        this.users = response.data;
+      });
+    },
     ShowNewModal() {
       this.editMode = false;
       this.form.reset();
@@ -186,8 +194,10 @@ export default {
       this.form.fill(user);
     },
     LoadUser() {
-      if(this.$gate.isAdminOrAuthor){
-        axios.get("api/user").then(({ data }) => (this.users = data.data));
+      if (this.$gate.isAdminOrAuthor) {
+        axios.get("api/user").then(response => {
+          this.users = response.data;
+        });
       }
     },
     CreateUser() {
@@ -276,6 +286,21 @@ export default {
 
     //using custom events
     Fire.$on("AfterCreated", () => this.LoadUser());
+
+    Fire.$on("searching", () => {
+      let query = this.$parent.search;
+      axios
+        .get("api/findUser?q=" + query)
+        .then(response => {
+          this.users = response.data;
+        })
+        .catch(() => {
+          Toast.fire({
+            type: "error",
+            title: "Some error occured, please try again later!"
+          });
+        });
+    });
   }
 };
 </script>

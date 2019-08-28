@@ -49,6 +49,20 @@ class UserController extends Controller
         return ['message', $currentPhoto];
     }
 
+    public function findUser(){
+        if($search = \Request::get('q')){
+            $users = User::where(function($query) use ($search){
+                $query->where('name','LIKE', "%$search%")
+                ->orWhere('email','LIKE', "%$search%");
+            })->paginate(5);
+            
+        } else {
+            $users = User::latest()->paginate(5);
+        }
+        return $users;
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -59,7 +73,7 @@ class UserController extends Controller
         // Authrize User/Roles
         // $this->authorize('isAdmin');
         if (\Gate::any(['isAdmin', 'isAuthor'])) {
-            return User::latest()->paginate(10);
+            return User::latest()->paginate(5);
         }
     }
 
